@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -56,12 +57,23 @@ public class PostService {
         return postRepository.findAll();
     }
 
-    public List<Post> getPostsByCategory(Integer categoryId) {
-        return new ArrayList<>();
+    public List<PostDto> getPostsByCategory(Integer categoryId) {
+        Category category=categoryRepository.findById(categoryId).orElseThrow(()-> new ResourceNotFoundException("Category",
+                "categoryId",categoryId));
+        List<Post> posts=this.postRepository.findByCategory(category);
+        List<PostDto> postDtos=posts.stream().map(post-> this.modelMapper.map(post,PostDto.class)).collect(Collectors.toList());
+        return postDtos;
     }
 
-    public List<Post> getPostsByUser(Integer userId) {
-        return new ArrayList<>();
+    public List<PostDto> getPostsByUser(Integer userId) {
+        User user=userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User",
+                "userId",userId));
+
+        List<Post> posts=this.postRepository.findByUser(user);
+        List<PostDto> postDtos=posts.stream().map(post-> this.modelMapper.map(post,PostDto.class)).
+                collect(Collectors.toList());
+        return postDtos;
+
     }
 
     public List<Post> serachPosts(String keyword) {
