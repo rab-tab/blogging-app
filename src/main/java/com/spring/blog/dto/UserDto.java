@@ -1,5 +1,6 @@
-package com.spring.blog.entities;
+package com.spring.blog.dto;
 
+import com.spring.blog.entities.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,20 +9,16 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @NotEmpty
@@ -36,8 +33,5 @@ public class User {
     private String password;
 
     private String about;
-
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<Post> posts=new ArrayList<>();
 
 }

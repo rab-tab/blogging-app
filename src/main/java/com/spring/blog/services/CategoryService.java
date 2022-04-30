@@ -4,10 +4,12 @@ import com.spring.blog.entities.Category;
 import com.spring.blog.exceptions.ResourceNotFoundException;
 import com.spring.blog.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class CategoryService {
 
     @Autowired
@@ -36,6 +38,8 @@ public class CategoryService {
     }
 
     public List<Category> retrieveAllCategories() {
-        return categoryRepository.findAll();
+        List<Category> categories= categoryRepository.findAll();
+        System.out.println("retrieveAllCategories list size "+categories.size());
+        return categories;
     }
 }

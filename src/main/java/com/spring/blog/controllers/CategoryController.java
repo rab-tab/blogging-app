@@ -27,8 +27,8 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}")
-    public ResponseEntity<Category> retrieveCategory(@PathVariable Integer category) {
-        Category category1 = this.categoryService.getCategory(category);
+    public ResponseEntity<Category> retrieveCategory(@PathVariable Integer categoryId) {
+        Category category1 = this.categoryService.getCategory(categoryId);
         return new ResponseEntity<>(category1, HttpStatus.OK);
     }
 
@@ -39,7 +39,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{categoryId}")
-    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Integer categoryId) {
+    public ResponseEntity<ApiResponse> deleteCategory(@PathVariable Integer categoryId) {
         this.categoryService.deleteCategory(categoryId);
         return new ResponseEntity(new ApiResponse("category deleted successfully", true), HttpStatus.OK);
 

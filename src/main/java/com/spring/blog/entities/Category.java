@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -22,6 +24,9 @@ public class Category {
 
     @Column(name="description")
     private String categoryDescription;
+
+    @OneToMany(mappedBy = "category",cascade = CascadeType.ALL)
+    private List<Post> posts=new ArrayList<>();
 
 
 }
