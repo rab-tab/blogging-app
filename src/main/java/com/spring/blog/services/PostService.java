@@ -35,13 +35,13 @@ public class PostService {
     public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId) {
         User user = this.userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User ", "userId", userId));
         Category category = this.categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category ID ", "categoryId", categoryId));
-        Post post=modelMapper.map(postDto,Post.class);
+        Post post = modelMapper.map(postDto, Post.class);
         post.setUser(user);
         post.setCategory(category);
         post.setCreatedDate(new Date());
         post.setImageName("default.png");
-        Post newPost= postRepository.save(post);
-        return  this.modelMapper.map(newPost,PostDto.class);
+        Post newPost = postRepository.save(post);
+        return this.modelMapper.map(newPost, PostDto.class);
     }
 
     public Post createPost1(Post post) {
@@ -51,31 +51,31 @@ public class PostService {
 
     public PostDto getPostById(Integer postId) {
 
-        Post post=this.postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","postId",postId));
-        return this.modelMapper.map(post,PostDto.class);
+        Post post = this.postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "postId", postId));
+        return this.modelMapper.map(post, PostDto.class);
     }
 
     public List<PostDto> retrieveAllPosts() {
 
-         List<Post> posts=postRepository.findAll();
-         List<PostDto> postDtos=posts.stream().map((post)->this.modelMapper.map(post,PostDto.class)).collect(Collectors.toList());
-         return postDtos;
+        List<Post> posts = postRepository.findAll();
+        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        return postDtos;
     }
 
     public List<PostDto> getPostsByCategory(Integer categoryId) {
-        Category category=categoryRepository.findById(categoryId).orElseThrow(()-> new ResourceNotFoundException("Category",
-                "categoryId",categoryId));
-        List<Post> posts=this.postRepository.findByCategory(category);
-        List<PostDto> postDtos=posts.stream().map(post-> this.modelMapper.map(post,PostDto.class)).collect(Collectors.toList());
+        Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException("Category",
+                "categoryId", categoryId));
+        List<Post> posts = this.postRepository.findByCategory(category);
+        List<PostDto> postDtos = posts.stream().map(post -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
         return postDtos;
     }
 
     public List<PostDto> getPostsByUser(Integer userId) {
-        User user=userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User",
-                "userId",userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User",
+                "userId", userId));
 
-        List<Post> posts=this.postRepository.findByUser(user);
-        List<PostDto> postDtos=posts.stream().map(post-> this.modelMapper.map(post,PostDto.class)).
+        List<Post> posts = this.postRepository.findByUser(user);
+        List<PostDto> postDtos = posts.stream().map(post -> this.modelMapper.map(post, PostDto.class)).
                 collect(Collectors.toList());
         return postDtos;
 
@@ -83,5 +83,19 @@ public class PostService {
 
     public List<Post> serachPosts(String keyword) {
         return new ArrayList<>();
+    }
+
+    public void deletePost(Integer postId) {
+        Post post = this.postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "postId", postId));
+        this.postRepository.delete(post);
+    }
+
+    public PostDto updatePost(PostDto postDto, Integer postId) {
+        Post post = this.postRepository.findById(postId).orElseThrow(() -> new ResourceNotFoundException("Post", "postId", postId));
+        post.setTitle(postDto.getTitle());
+        post.setContent(postDto.getContent());
+        Post updatedPost = this.postRepository.save(post);
+        return this.modelMapper.map(updatedPost, PostDto.class);
+
     }
 }

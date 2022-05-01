@@ -3,6 +3,7 @@ package com.spring.blog.controllers;
 import com.spring.blog.dto.PostDto;
 import com.spring.blog.entities.Post;
 import com.spring.blog.services.PostService;
+import com.spring.blog.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,4 +55,20 @@ public class PostController {
         PostDto postDto = this.postService.getPostById(postId);
         return new ResponseEntity<PostDto>(postDto, HttpStatus.OK);
     }
+
+    @DeleteMapping("/posts/{postId}")
+    public ApiResponse deletePost(@PathVariable Integer postId)
+    {
+        this.postService.deletePost(postId);
+        return new ApiResponse("Post "+postId + " successfully deleted",true);
+    }
+
+    @PutMapping("/posts/{postId}")
+    public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto,@PathVariable Integer postId)
+    {
+        PostDto updatedPost=this.postService.updatePost(postDto,postId);
+        return new ResponseEntity<PostDto>(updatedPost,HttpStatus.OK);
+    }
+
+
 }
