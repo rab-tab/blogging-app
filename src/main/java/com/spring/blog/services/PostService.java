@@ -49,12 +49,17 @@ public class PostService {
     }
 
 
-    public Post getPostById(Integer postId) {
-        return postRepository.getById(postId);
+    public PostDto getPostById(Integer postId) {
+
+        Post post=this.postRepository.findById(postId).orElseThrow(()->new ResourceNotFoundException("Post","postId",postId));
+        return this.modelMapper.map(post,PostDto.class);
     }
 
-    public List<Post> retrieveAllPosts() {
-        return postRepository.findAll();
+    public List<PostDto> retrieveAllPosts() {
+
+         List<Post> posts=postRepository.findAll();
+         List<PostDto> postDtos=posts.stream().map((post)->this.modelMapper.map(post,PostDto.class)).collect(Collectors.toList());
+         return postDtos;
     }
 
     public List<PostDto> getPostsByCategory(Integer categoryId) {
