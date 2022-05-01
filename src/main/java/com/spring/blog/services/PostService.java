@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 
@@ -68,9 +69,9 @@ public class PostService {
         return postDtos;
     }
 
-    public PostResponse getAllPosts(Integer pageNumber,Integer pageSize)
+    public PostResponse getAllPosts(Integer pageNumber,Integer pageSize,String sortBy)
     {
-        Pageable p= PageRequest.of(pageNumber,pageSize);
+        Pageable p= PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
         Page<Post> pagePost =this.postRepository.findAll(p);
         List<Post> posts = pagePost.getContent();
         List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
