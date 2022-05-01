@@ -1,6 +1,7 @@
 package com.spring.blog.services;
 
 import com.spring.blog.dto.PostDto;
+import com.spring.blog.dto.PostResponse;
 import com.spring.blog.entities.Category;
 import com.spring.blog.entities.Post;
 import com.spring.blog.entities.User;
@@ -11,7 +12,11 @@ import com.spring.blog.repositories.UserRepository;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,11 +60,28 @@ public class PostService {
         return this.modelMapper.map(post, PostDto.class);
     }
 
-    public List<PostDto> retrieveAllPosts() {
-
-        List<Post> posts = postRepository.findAll();
+    public List<PostDto> retrieveAllPosts(Integer pageNumber,Integer pageSize) {
+        Pageable p= PageRequest.of(pageNumber,pageSize);
+        Page<Post> pagePost =this.postRepository.findAll(p);
+        List<Post> posts = pagePost.getContent();
         List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
         return postDtos;
+    }
+
+    public PostResponse getAllPosts(Integer pageNumber,Integer pageSize)
+    {
+        Pageable p= PageRequest.of(pageNumber,pageSize);
+        Page<Post> pagePost =this.postRepository.findAll(p);
+        List<Post> posts = pagePost.getContent();
+        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        PostResponse postResponse=new PostResponse();
+        postResponse.setContent(postDtos);
+        postResponse.setPageNumber(pagePost.getNumber());
+        postResponse.setPageSize(pagePost.getSize());
+        //postResponse.setTotalElements(pagePost.getNumberOfElements());
+        postResponse.setTotalPages(pagePost.getTotalPages());
+        postResponse.setLastPage(pagePost.isLast());
+        return postResponse;
     }
 
     public List<PostDto> getPostsByCategory(Integer categoryId) {
