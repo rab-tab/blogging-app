@@ -61,21 +61,20 @@ public class PostService {
         return this.modelMapper.map(post, PostDto.class);
     }
 
-    public List<PostDto> retrieveAllPosts(Integer pageNumber,Integer pageSize) {
-        Pageable p= PageRequest.of(pageNumber,pageSize);
-        Page<Post> pagePost =this.postRepository.findAll(p);
+    public List<PostDto> retrieveAllPosts(Integer pageNumber, Integer pageSize) {
+        Pageable p = PageRequest.of(pageNumber, pageSize);
+        Page<Post> pagePost = this.postRepository.findAll(p);
         List<Post> posts = pagePost.getContent();
         List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
         return postDtos;
     }
 
-    public PostResponse getAllPosts(Integer pageNumber,Integer pageSize,String sortBy)
-    {
-        Pageable p= PageRequest.of(pageNumber,pageSize, Sort.by(sortBy));
-        Page<Post> pagePost =this.postRepository.findAll(p);
+    public PostResponse getAllPosts(Integer pageNumber, Integer pageSize, String sortBy) {
+        Pageable p = PageRequest.of(pageNumber, pageSize, Sort.by(sortBy));
+        Page<Post> pagePost = this.postRepository.findAll(p);
         List<Post> posts = pagePost.getContent();
         List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
-        PostResponse postResponse=new PostResponse();
+        PostResponse postResponse = new PostResponse();
         postResponse.setContent(postDtos);
         postResponse.setPageNumber(pagePost.getNumber());
         postResponse.setPageSize(pagePost.getSize());
@@ -119,6 +118,13 @@ public class PostService {
         post.setContent(postDto.getContent());
         Post updatedPost = this.postRepository.save(post);
         return this.modelMapper.map(updatedPost, PostDto.class);
+
+    }
+
+    public List<PostDto> searchPosts(String keyword) {
+        List<Post> posts = postRepository.findByTitleContaining("%"+keyword+"%");
+        List<PostDto> postDto = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class)).collect(Collectors.toList());
+        return postDto;
 
     }
 }
